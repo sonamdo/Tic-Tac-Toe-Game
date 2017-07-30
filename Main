@@ -1,0 +1,218 @@
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+
+<button class = "btn2" id = "playerX">X</button>
+<button class = "btn" id = "test"><p id = "ptest">Reset</p></button>
+<button class = "btn2" id = "playerO">O</button>
+
+<body>
+<div>
+<button class = "btn" id = "btn1"><p id = "xoro1"></p></button>
+<button class = "btn" id = "btn2"><p id = "xoro2"></p></button>
+<button class = "btn" id = "btn3"><p id = "xoro3"></p></button>
+</div>
+<div>
+<button class = "btn" id = "btn4"><p id = "xoro4"></p></button>
+<button class = "btn" id = "btn5"><p id = "xoro5"></p></button>
+<button class = "btn" id = "btn6"><p id = "xoro6"></p></button>
+</div>
+<div>
+<button class = "btn" id = "btn7"><p id = "xoro7"></p></button>
+<button class = "btn" id = "btn8"><p id = "xoro8"></p></button>
+<button class = "btn" id = "btn9"><p id = "xoro9"></p></button>
+</div>
+</body>
+
+<style>
+body{
+  background-color: black;
+}
+
+h1{
+  color:white;
+  font-family: arial;
+}
+
+.btn{
+  width: 100px;
+  height: 100px;
+  margin:1px;
+  vertical-align: top;
+}
+
+body{
+  text-align: center;
+  position: relative;
+  top:100px;
+}
+
+.btn2{
+  height: 40px;
+  width: 40px;
+}
+
+#playerX{
+  background-color: blue;
+}
+
+#playerO{
+  background-color: grey;
+}
+</style>
+
+<script>
+$(document).ready(function(){//loseOrWin not running?
+var winningSquare = 0;
+var counter = 0;
+var squaresUsed = [];
+var turn = 0;
+var winConditions = [
+  [1,2,3],[1,4,7],[1,5,9],
+  [2,5,8],[3,5,7],[3,6,9],
+  [4,5,6],[7,8,9]
+]
+var counterO = 0;
+var counterX = 0;
+var temp = 0;
+var player = "X";
+var computer = "O";
+
+function tie(){
+  if (squaresUsed.length == 8)
+  {
+    alert("It's A Tie!");
+  }
+}
+
+function winOrLose(){//function to check if X or O has won
+  for (var i = 0; i<winConditions.length; i++){
+    counterO = 0;
+    counterX = 0;
+    for (var e = 0; e<3; e++){
+      temp = winConditions[i][e];
+       if (document.getElementById("xoro"+temp).innerHTML === player)
+       {
+         counterX++;
+       }
+       if (document.getElementById("xoro"+temp).innerHTML === computer)
+       {
+          counterO++;
+       }
+        if (counterX === 3)
+          {
+            counterX = 0;
+            alert(player + " Wins!");
+            $("#test").click();
+          }
+        else if (counterO === 3)
+          {
+            counterO = 0;
+            alert(computer + " Wins!");
+            $("#test").click();
+           }
+        else if (squaresUsed.length == 8)
+           {
+            alert("It's A Tie!");
+            $("#test").click();
+           }
+    }
+}
+}
+
+function computersTurn(){//Calculates computers action if player is not about to win. ie nothing to react to
+  myVar = (Math.floor(Math.random()*9)+1);
+  if (document.getElementById("xoro"+myVar).innerHTML === ""){
+   document.getElementById("xoro"+myVar).innerHTML = computer;
+    winOrLose();
+  }
+  else computersTurn();
+}
+
+function gameFunction(){//calculates computers reaction
+   for (var i = 0; i<winConditions.length;i++){
+    counter = 0;
+    for (var e = 0; e<winConditions[e].length;e++)
+    if (squaresUsed.indexOf(winConditions[i][e])>=0){
+   counter++;
+   if (counter === 2){
+    for (var t = 0; t<3;t++){
+      if (squaresUsed.indexOf(winConditions[i][t])<0){
+        winningSquare = (winConditions[i][t]);
+        tempVal = document.getElementById("xoro" + winningSquare);
+        if (tempVal.innerHTML === ""){
+        	tempVal.innerHTML = computer;
+          squaresUsed.push(winningSquare);
+          winOrLose();
+          return;
+          }
+      	}
+    	}
+    }
+   }
+  }
+  winOrLose();
+  if (squaresUsed.length>0)
+  {
+    computersTurn();
+  }
+}
+
+  $("#test").on("click",function(){
+ for (var i = 1; i<10; i++){
+    document.getElementById("xoro"+i).innerHTML = "";
+   };
+   squaresUsed = [];
+   });
+
+$("#playerX").on("click",function(){
+  player = "X";
+  computer = "O";
+  $("#playerO").css("background-color","grey");
+   $("#playerX").css("background-color","blue")
+});
+
+$("#playerO").on("click",function(){
+  player = "O";
+  computer = "X";
+   $("#playerX").css("background-color","grey");
+   $("#playerO").css("background-color","blue")
+});
+
+$(".btn").on("click",function(){
+    switch(this.id){
+      case 'btn1':
+        if (document.getElementById("xoro1").innerHTML !== ""){break;}
+        else {squaresUsed.push(1);document.getElementById("xoro1").innerHTML = player; gameFunction(); break;}
+      case 'btn2':
+        if (document.getElementById("xoro2").innerHTML !== ""){break;}
+        squaresUsed.push(2);document.getElementById("xoro2").innerHTML = player; gameFunction(); break;
+      case 'btn3':
+        if (document.getElementById("xoro3").innerHTML !== ""){break;}
+        squaresUsed.push(3);document.getElementById("xoro3").innerHTML = player; gameFunction(); break;
+      case 'btn4':
+        if (document.getElementById("xoro4").innerHTML !== ""){break;}
+        squaresUsed.push(4);document.getElementById("xoro4").innerHTML = player; gameFunction(); break;
+      case 'btn5':
+        if (document.getElementById("xoro5").innerHTML !== ""){break;}
+        squaresUsed.push(5);document.getElementById("xoro5").innerHTML = player; gameFunction(); break;
+      case 'btn6':
+        if (document.getElementById("xoro6").innerHTML !== ""){break;}
+        squaresUsed.push(6);document.getElementById("xoro6").innerHTML = player; gameFunction(); break;
+      case 'btn7':
+        if (document.getElementById("xoro7").innerHTML !== ""){break;}
+        squaresUsed.push(7);document.getElementById("xoro7").innerHTML = player; gameFunction(); break;
+      case 'btn8':
+        if (document.getElementById("xoro8").innerHTML !== ""){break;}
+        squaresUsed.push(8);document.getElementById("xoro8").innerHTML = player; gameFunction(); break;
+      case 'btn9':
+        if (document.getElementById("xoro9").innerHTML !== ""){break;}
+        squaresUsed.push(9);document.getElementById("xoro9").innerHTML = player; gameFunction(); break;
+                  }
+
+});
+
+});
+
+</script>
